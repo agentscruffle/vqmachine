@@ -10,12 +10,9 @@
 namespace Machine {
 
 EndingTuple::EndingTuple() {
-	// TODO Auto-generated constructor stub
-
 }
 
 EndingTuple::~EndingTuple() {
-	// TODO Auto-generated destructor stub
 }
 
 } /* namespace Machine */

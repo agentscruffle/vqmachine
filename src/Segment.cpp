@@ -21,4 +21,9 @@ double Segment::Length() {
 	return sqrt((end.x - start.x)*(end.x - start.x) + (end.y - start.y)*(end.y - start.y));
 }
 
+std::string Segment::ToString() {
+	return 0;
+}
+
+
 } /* namespace Machine */

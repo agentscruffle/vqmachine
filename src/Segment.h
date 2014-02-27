@@ -8,13 +8,20 @@
 #ifndef SEGMENT_H_
 #define SEGMENT_H_
 
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include "StartingTuple.h"
+#include "EndingTuple.h"
+
 namespace Machine {
 
-class Segment  {
+class Segment   {
 public:
 	Segment();
 	virtual ~Segment();
 	double    Length();
+	std::string ToString();
 	StartingTuple start;
 	EndingTuple   end;
 };

@@ -8,23 +8,20 @@
 #ifndef CYCLE_H_
 #define CYCLE_H_
 
-#include "Segment.h"
+#include "SegmentArray.h"
 
 namespace Machine {
 
-
-class Cycle {
+class Cycle  {
 public:
-    Cycle(int, std::vector<Segment>, double, int);
+    Cycle(int, SegmentArray, double, int);
 	Cycle();
 	virtual ~Cycle();
 	// Each cycle works on it's own group of segments
-	std::vector<Segment> segments;
+	SegmentArray segments;
     int status; // 0 = inactive, 1 = active, 2 = investigating
     double measureOfQuality; // smaller values are better. total distance of path.
     int numberOfVisits;
-    std::string ToString();
-
 };
 
 

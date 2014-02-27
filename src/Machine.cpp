@@ -252,6 +252,7 @@ void MachineInstance::InfluenceInactiveCycles(int i)
     if (cycles[b]->numberOfVisits != 0) break;
     if (cycles[i]->measureOfQuality < cycles[b]->measureOfQuality) // investigating cycle has a better solution than current inactive cycle (< because smaller is better)
     {
+
       double p = random.NextDouble(); // will current inactive cycle be influenced by the cycle?
       if (this->probInfluenced > p) // this inactive cycle is persuaded by the investigation
       {

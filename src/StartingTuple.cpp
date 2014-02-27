@@ -2,7 +2,7 @@
  * StartingTuple.cpp
  *
  *  Created on: Feb 13, 2014
- *      Author: eddie
+ *      Author: VQMTEAM
  */
 
 #include "StartingTuple.h"
@@ -10,12 +10,10 @@
 namespace Machine {
 
 StartingTuple::StartingTuple() {
-	// TODO Auto-generated constructor stub
 
 }
 
 StartingTuple::~StartingTuple() {
-	// TODO Auto-generated destructor stub
 }
 
 } /* namespace Machine */
