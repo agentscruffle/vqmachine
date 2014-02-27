@@ -22,10 +22,10 @@ int main(int argc, char* argv[])
 		// Create virtual quantum machine on the stack
 		pmachine = new MachineInstance(numberofqBits);
 		// Start the virtual quantum machine
-		returned_error = pmachine->Start();
+		returned_error = pmachine->Start(cout);
 		// Assuming the machine hasn't thrown an error, process the stop request
 		if (!returned_error)
-		  returned_error = pmachine->Stop();
+		  returned_error = pmachine->Stop(cout);
 	}
 	catch (int error)
 	{
