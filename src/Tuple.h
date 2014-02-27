@@ -10,11 +10,15 @@
 
 namespace Machine {
 
-struct Tuple {
+class Tuple {
 public:
 
 	double x;
 	double y;
+
+	Tuple();
+	virtual ~Tuple();
+
 
 };
 

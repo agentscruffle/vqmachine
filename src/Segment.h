@@ -7,7 +7,11 @@
 
 #ifndef SEGMENT_H_
 #define SEGMENT_H_
-
+#include <algorithm>
+#include <math.h>
+#include <string>
+#include <map>
+#include <set>
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>

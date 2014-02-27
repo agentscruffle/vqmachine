@@ -12,7 +12,7 @@
 
 namespace Machine {
 
-class StartingTuple : Tuple {
+class StartingTuple : public Tuple {
 public:
 	StartingTuple();
 	virtual ~StartingTuple();

@@ -22,9 +22,9 @@ public:
 	long qBits;
 	Cycle **cycles;
 	MachineInstance(long);
-	long Start(std::ostream);
-	long Stop(std::ostream);
-	long Tick(std::ostream);
+	long Start();
+	long Stop();
+	long Tick();
 	std::string GetStatus();
 	SegmentArray GenerateRandomPath();
 	SegmentArray GenerateNeighborPath(SegmentArray segments);
@@ -40,7 +40,6 @@ public:
 	int numberInactive;      // number of inactive cycles
 	int numberActive;        // number of active cycles
 	int numberInvestigating; // number of investigating cycles
-	int maxNumberVisits; // max number of times cycle will visit a node without finding a better neighbor
 	double probInfluenced; // probability inactive cycle is influenced by another cycle
 	double probMistake; // probability an active cycle will reject a better node OR accept a worse node
 	SegmentArray bestSegmentData;

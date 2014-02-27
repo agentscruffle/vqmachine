@@ -12,7 +12,7 @@
 
 namespace Machine {
 
-class EndingTuple : Tuple {
+class EndingTuple : public Tuple {
 public:
 	EndingTuple();
 	virtual ~EndingTuple();

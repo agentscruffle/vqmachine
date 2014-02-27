@@ -10,23 +10,27 @@
 namespace Machine {
 
 MachineInstance::MachineInstance(long numberOfQBits) {
+
+	// number of qbits in the vqm
 	qBits = numberOfQBits;
+
 	// our algorithm assumes that the number of active > number investigating > number inactive
     numberInactive = qBits * .20;
     numberInvestigating = qBits * .30;
     numberActive = qBits * .50;
-    maxNumberVisits = 100;
+
 	probInfluenced = 0.90; // probability inactive cycle is influenced by another cycle
 	probMistake = 0.01; // probability an active cycle will reject a better node OR accept a worse node
 	*cycles =  new Cycle[qBits];
     srand(0);  // set the seed for the random number generator
-
 }
 
 MachineInstance::~MachineInstance() {
+	if (*cycles)
+		delete *cycles;
 }
 
-long MachineInstance::Start(std::ostream cout) {
+long MachineInstance::Start() {
 
     cout << "\nStarting machine\n";
     cout << "Loading segment data for Traveling Salesman Problem analysis";
@@ -38,18 +42,19 @@ long MachineInstance::Start(std::ostream cout) {
     cout << "Best possible solution (shortest path) length = " + segmentData.ShortestPathLength();
 
     this->bestSegmentData = GenerateRandomPath(); // alternative initializations are possible
-    this->bestMeasureOfQuality = MeasureOfQuality(this->bestSegmentData);
+    this->bestMeasureOfQuality = this->bestSegmentData.MeasureOfQuality();
     this->indexesOfInactiveCycles = new int[numberInactive]; // indexes of cycles which are currently inactive
 
 	return 0L;
 }
 
-long MachineInstance::Stop(std::ostream cout) {
+long MachineInstance::Stop() {
     cout << "Stop machine";
 	return 0L;
 }
 
-long MachineInstance::Tick(std::ostream cout) {
+long MachineInstance::Tick() {
+
     for (int i = 0; i < qBits; ++i) // initialize each cycle, and best solution
     {
       int currStatus;
@@ -128,7 +133,7 @@ SegmentArray MachineInstance::GenerateRandomPath()
   result.Copy(segmentData);
   for (unsigned int i = 0; i < result.size(); i++) // Fisher-Yates (Knuth) shuffle
   {
-    int r = random.Next(i, result.size());
+	unsigned int r = rand() % result.size(); // [0, Length-1] inclusive
     Segment temp = result[r]; result[r] = result[i]; result[i] = temp;
   }
   return result;
@@ -168,7 +173,8 @@ void MachineInstance::ProcessActiveCycle(int i)
     if (prob < probMistake) // cycle makes mistake: rejects a better neighbor food source
     {
       ++cycles[i]->numberOfVisits; // no change to memory but update number of visits
-      if (cycles[i]->numberOfVisits > maxNumberVisits) numberOfVisitsOverLimit = true;
+      // we don't allow more visits per node than we have the number of qBits
+      if (cycles[i]->numberOfVisits > qBits) numberOfVisitsOverLimit = true;
     }
     else // cycle does not make a mistake: accepts a better neighbor
     {
@@ -190,7 +196,8 @@ void MachineInstance::ProcessActiveCycle(int i)
     else // no mistake: cycle rejects worse segment path
     {
       ++cycles[i]->numberOfVisits;
-      if (cycles[i]->numberOfVisits > maxNumberVisits) numberOfVisitsOverLimit = true;
+      // we don't allow more visits per node than we have the number of qBits
+      if (cycles[i]->numberOfVisits > qBits) numberOfVisitsOverLimit = true;
     }
   }
 
@@ -221,7 +228,7 @@ void MachineInstance::ProcessActiveCycle(int i)
 void MachineInstance::ProcessInvestigatingCycle(int i)
 {
   SegmentArray randomSegmentPath = GenerateRandomPath(); // investigating cycle finds a random segment path
-  double randomSegmentPathQuality = MeasureOfQuality(randomSegmentPath); // and examines its quality
+  double randomSegmentPathQuality = randomSegmentPath.MeasureOfQuality(); // and examines its quality
   if (randomSegmentPathQuality < cycles[i]->measureOfQuality) // investigating cycle has found a better solution than its current one (< because smaller measure is better)
   {
     cycles[i]->segments.Copy(randomSegmentPath);
@@ -240,8 +247,7 @@ void MachineInstance::ProcessInvestigatingCycle(int i)
   } // if cycle found better solution
 } // ProcessInvestigatingCycle()
 
-void MachineInstance::ProcessInactiveCycle(int i)
-{}
+void MachineInstance::ProcessInactiveCycle(int i) {}
 
 void MachineInstance::InfluenceInactiveCycles(int i)
 {
@@ -252,8 +258,7 @@ void MachineInstance::InfluenceInactiveCycles(int i)
     if (cycles[b]->numberOfVisits != 0) break;
     if (cycles[i]->measureOfQuality < cycles[b]->measureOfQuality) // investigating cycle has a better solution than current inactive cycle (< because smaller is better)
     {
-
-      double p = random.NextDouble(); // will current inactive cycle be influenced by the cycle?
+      double p =  ((double) rand() / (RAND_MAX)); // will current inactive cycle be influenced by the cycle?
       if (this->probInfluenced > p) // this inactive cycle is persuaded by the investigation
       {
         cycles[b]->segments.Copy(cycles[i]->segments);

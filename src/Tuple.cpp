@@ -9,4 +9,12 @@
 
 namespace Machine {
 
+Tuple::Tuple() {
+x = 0.0;
+y = 0.0;
+}
+
+Tuple::~Tuple() {
+}
+
 } /* namespace Machine */

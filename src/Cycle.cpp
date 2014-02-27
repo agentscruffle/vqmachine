@@ -6,11 +6,6 @@
  */
 
 #include "Cycle.h"
-#include <algorithm>
-#include <math.h>
-#include <string>
-#include <map>
-#include <set>
 
 namespace Machine {
 
