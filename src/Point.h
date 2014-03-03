@@ -15,19 +15,29 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
-#include "StartingTuple.h"
-#include "EndingTuple.h"
+#include <sstream>
+
 
 namespace Machine {
 
-class Segment   {
+
+class Utils
+{
 public:
-	Segment();
-	virtual ~Segment();
-	double    Length();
+	static std::string ToString (int);
+	static std::string ToString (unsigned long);
+	static std::string ToString (double);
+};
+
+class Point   {
+private:
+
+public:
+	Point();
+	virtual ~Point();
 	std::string ToString();
-	StartingTuple start;
-	EndingTuple   end;
+	int x;
+	int y;
 };
 
 } /* namespace Machine */

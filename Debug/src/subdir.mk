@@ -5,33 +5,24 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/Cycle.cpp \
-../src/EndingTuple.cpp \
 ../src/Machine.cpp \
 ../src/Main.cpp \
-../src/Segment.cpp \
-../src/SegmentArray.cpp \
-../src/StartingTuple.cpp \
-../src/Tuple.cpp 
+../src/Point.cpp \
+../src/PointArray.cpp 
 
 OBJS += \
 ./src/Cycle.o \
-./src/EndingTuple.o \
 ./src/Machine.o \
 ./src/Main.o \
-./src/Segment.o \
-./src/SegmentArray.o \
-./src/StartingTuple.o \
-./src/Tuple.o 
+./src/Point.o \
+./src/PointArray.o 
 
 CPP_DEPS += \
 ./src/Cycle.d \
-./src/EndingTuple.d \
 ./src/Machine.d \
 ./src/Main.d \
-./src/Segment.d \
-./src/SegmentArray.d \
-./src/StartingTuple.d \
-./src/Tuple.d 
+./src/Point.d \
+./src/PointArray.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

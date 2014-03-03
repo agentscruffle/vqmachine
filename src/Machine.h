@@ -11,8 +11,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
-
-#include "SegmentArray.h"
+#include "PointArray.h"
 #include "Cycle.h"
 
 namespace Machine {
@@ -20,30 +19,28 @@ namespace Machine {
 class MachineInstance {
 public:
 	long qBits;
-	Cycle **cycles;
+	Cycle *cycles;
 	MachineInstance(long);
 	long Start();
 	long Stop();
 	long Tick();
 	std::string GetStatus();
-	SegmentArray GenerateRandomPath();
-	SegmentArray GenerateNeighborPath(SegmentArray segments);
-	double MeasureOfQuality(SegmentArray segments);
+	PointArray GenerateRandomPath();
+	PointArray GenerateNeighborPath(PointArray points);
 	void ProcessActiveCycle(int i);
 	void ProcessInvestigatingCycle(int i);
 	void ProcessInactiveCycle(int i);
 	void InfluenceInactiveCycles(int i);
 
 	virtual ~MachineInstance();
-	SegmentArray segmentData; // this is the problem-specific data we want to optimize
+	PointArray pointData; // this is the problem-specific data we want to optimize
 	int totalNumberCycles;   // mostly for readability in the object constructor call
 	int numberInactive;      // number of inactive cycles
 	int numberActive;        // number of active cycles
 	int numberInvestigating; // number of investigating cycles
 	double probInfluenced; // probability inactive cycle is influenced by another cycle
 	double probMistake; // probability an active cycle will reject a better node OR accept a worse node
-	SegmentArray bestSegmentData;
-	double  bestMeasureOfQuality;
+	PointArray bestPointData;
 	int     *indexesOfInactiveCycles; // contains indexes into the cycles array
 };
 

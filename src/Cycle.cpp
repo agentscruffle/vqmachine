@@ -16,12 +16,5 @@ Cycle::~Cycle() {
 
 }
 
-Cycle::Cycle(int status, SegmentArray segmentList,
-		double measureOfQuality, int numberOfVisits) {
-	this->status = status;
-	segmentList.Copy(this->segments);
-	this->measureOfQuality = measureOfQuality;
-	this->numberOfVisits = numberOfVisits;
-}
 
 } /* namespace Machine */
