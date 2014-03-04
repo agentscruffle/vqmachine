@@ -1,12 +1,12 @@
 /*
- * Segment.h
+ * Point.h
  *
  *  Created on: Feb 13, 2014
  *      Author: VQMTEAM
  */
 
-#ifndef SEGMENT_H_
-#define SEGMENT_H_
+#ifndef POINT_H_
+#define POINT_H_
 #include <algorithm>
 #include <math.h>
 #include <string>
@@ -36,9 +36,10 @@ public:
 	Point();
 	virtual ~Point();
 	std::string ToString();
+	double RelativeMeasure(Point);
 	int x;
 	int y;
 };
 
 } /* namespace Machine */
-#endif /* SEGMENT_H_ */
+#endif /* POINT_H_ */

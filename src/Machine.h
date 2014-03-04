@@ -34,7 +34,7 @@ public:
 
 	virtual ~MachineInstance();
 	Graph graph; // this is the graph we want to find the shortest path for, this is not ordered
-	int totalNumberOfTicksAllowed;   // mostly for readability in the object constructor call
+	int totalNumberOfTicksAllowed;   // determined by the size of our machine and how many nodes we are processing
 	int numberInactive;      // number of inactive cycles
 	int numberActive;        // number of active cycles
 	int numberInvestigating; // number of investigating cycles

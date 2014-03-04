@@ -59,25 +59,16 @@ unsigned long Graph::Length()
     return size();
 }
 
-
 double Graph::Measure()
 {
   double answer = 0.0;
   for (unsigned int i = 0; i < size() - 1; ++i)
   {
-    double d = RelativeQuality(at(i),at(i+1));
+    double d = at(i).RelativeMeasure(at(i+1));
     answer += d;
   }
   return answer;
 } // MeasureOfQuality()
-
-
-
-
-double Graph::RelativeQuality(Point point1, Point point2)
-{
-    return sqrt((point2.x - point1.x)*(point2.x - point1.x) + (point2.y - point1.y)*(point2.y - point1.y));
-}
 
 
 } /* namespace Machine */

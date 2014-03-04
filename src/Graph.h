@@ -1,6 +1,6 @@
 
-#ifndef SEGVECTORS_H_
-#define SEGVECTORS_H_
+#ifndef GRAPH_H_
+#define GRAPH_H_
 
 #include <iostream>
 #include <stdlib.h>
@@ -22,7 +22,7 @@ public:
 	unsigned long NumberOfPossiblePaths();
 	unsigned long ShortestPathLength();
 	double Measure();
-	double RelativeQuality(Point,Point);
+	double RelativeMeasure(Point,Point);
 
 
 };
@@ -30,4 +30,4 @@ public:
 
 } /* namespace Machine */
 
-#endif /* SEGVECTORS_H_ */
+#endif /* GRAPH_H_ */

@@ -57,5 +57,10 @@ std::string Point::ToString() {
 	return s;
 }
 
+double Point::RelativeMeasure(Point pt)
+{
+    return sqrt((pt.x - x)*(pt.x - x) + (pt.y - y)*(pt.y - y));
+}
+
 
 } /* namespace Machine */
