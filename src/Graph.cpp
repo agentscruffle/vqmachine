@@ -1,20 +1,20 @@
 /*
- *  PointArray.cpp
+ *  Graph.cpp
  *
  *  Created on: Feb 26, 2014
  *      Author: VQMTEAM.
  */
 
-#include "PointArray.h"
+#include "Graph.h"
 
 namespace Machine {
 
 
-void PointArray::Copy(PointArray in) {
+void Graph::Copy(Graph in) {
 	swap(in);
 }
 
-std::string PointArray::GetStatus() {
+std::string Graph::GetStatus() {
     string s = "";
     s += "Points: ";
     for (unsigned int i = 0; i < size(); ++i)
@@ -22,12 +22,12 @@ std::string PointArray::GetStatus() {
     return s;
 }
 
-bool PointArray::multiplication_is_safe(unsigned long a, unsigned long b) {
+bool Graph::multiplication_is_safe(unsigned long a, unsigned long b) {
     size_t a_bits=highestOneBitPosition(a), b_bits=highestOneBitPosition(b);
-    return (a_bits+b_bits<=32);
+    return (a_bits+b_bits<=sizeof(unsigned long));
 }
 
-size_t PointArray::highestOneBitPosition(unsigned long a) {
+size_t Graph::highestOneBitPosition(unsigned long a) {
     size_t bits=0;
     while (a!=0) {
         ++bits;
@@ -36,7 +36,7 @@ size_t PointArray::highestOneBitPosition(unsigned long a) {
     return bits;
 }
 
-unsigned long PointArray::NumberOfPossiblePaths()
+unsigned long Graph::NumberOfPossiblePaths()
 {
     unsigned long answer = 1;
     for (unsigned long i = 1; i <= size(); ++i)
@@ -49,18 +49,18 @@ unsigned long PointArray::NumberOfPossiblePaths()
     return answer;
 }
 
-unsigned long PointArray::ShortestPathLength()
+unsigned long Graph::ShortestPathLength()
 {
     return 1.0 * (size() - 1);
 }
 
-unsigned long PointArray::Length()
+unsigned long Graph::Length()
 {
     return size();
 }
 
 
-double PointArray::MeasureOfQuality()
+double Graph::Measure()
 {
   double answer = 0.0;
   for (unsigned int i = 0; i < size() - 1; ++i)
@@ -74,7 +74,7 @@ double PointArray::MeasureOfQuality()
 
 
 
-double PointArray::RelativeQuality(Point point1, Point point2)
+double Graph::RelativeQuality(Point point1, Point point2)
 {
     return sqrt((point2.x - point1.x)*(point2.x - point1.x) + (point2.y - point1.y)*(point2.y - point1.y));
 }

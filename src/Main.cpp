@@ -19,8 +19,10 @@ int main(int argc, char* argv[])
 	try
 	{
 		long numberofqBits = atol(argv[1]);
+		long numberofNodes = atol(argv[2]);
+		long isRandom = atol(argv[3]);
 		// Create virtual quantum machine on the stack
-		pmachine = new MachineInstance(numberofqBits);
+		pmachine = new MachineInstance(numberofqBits, numberofNodes, isRandom);
 		// Start the virtual quantum machine
 		returned_error = pmachine->Start();
 		// Assuming the machine hasn't thrown an error, process the stop request
@@ -35,6 +37,10 @@ int main(int argc, char* argv[])
 	if (pmachine)
 		delete pmachine;
 
-	cout << "Machine stopped.  Error number is " + returned_error;
+	if (returned_error == 0)
+		cout << "Machine Completed Normally.";
+	else
+		cout << "Machine Completed Abnormally.  Returned error code is " + Utils::ToString(returned_error);
+
 	return returned_error;
 }

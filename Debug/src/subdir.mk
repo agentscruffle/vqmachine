@@ -5,24 +5,24 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/Cycle.cpp \
+../src/Graph.cpp \
 ../src/Machine.cpp \
 ../src/Main.cpp \
-../src/Point.cpp \
-../src/PointArray.cpp 
+../src/Point.cpp 
 
 OBJS += \
 ./src/Cycle.o \
+./src/Graph.o \
 ./src/Machine.o \
 ./src/Main.o \
-./src/Point.o \
-./src/PointArray.o 
+./src/Point.o 
 
 CPP_DEPS += \
 ./src/Cycle.d \
+./src/Graph.d \
 ./src/Machine.d \
 ./src/Main.d \
-./src/Point.d \
-./src/PointArray.d 
+./src/Point.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

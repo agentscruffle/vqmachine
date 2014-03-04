@@ -11,17 +11,17 @@
 using namespace std;
 
 namespace Machine {
-class PointArray : public vector<Point> {
+class Graph : public vector<Point> {
 private:
 	bool multiplication_is_safe(unsigned long a, unsigned long b);
 	size_t highestOneBitPosition(unsigned long a);
 public:
-	void Copy(PointArray);
+	void Copy(Graph);
 	std::string GetStatus();
 	unsigned long Length();
 	unsigned long NumberOfPossiblePaths();
 	unsigned long ShortestPathLength();
-	double MeasureOfQuality();
+	double Measure();
 	double RelativeQuality(Point,Point);
 
 

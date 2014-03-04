@@ -10,7 +10,7 @@
 
 namespace Machine {
 
-MachineInstance::MachineInstance(long numberOfQBits) {
+MachineInstance::MachineInstance(long numberOfQBits, long numberOfNodes, long isRandom) {
 
 	// number of qbits in the vqm
 	qBits = numberOfQBits;
@@ -20,19 +20,63 @@ MachineInstance::MachineInstance(long numberOfQBits) {
     numberInvestigating = qBits * .30;
     numberActive = qBits * .50;
 
-	probInfluenced = 0.90; // probability inactive cycle is influenced by another cycle
-	probMistake = 0.01; // probability an active cycle will reject a better node OR accept a worse node
 	cycles =  new Cycle[qBits];
     srand(0);  // set the seed for the random number generator
 
-    for (int i = 0; i <  qBits; i++)
-    {
-    Point s;
-    s.x = (rand() % 100) + 1 ;
-    s.y = (rand() % 100) + 1;
-    pointData.push_back(s);
-    }
 
+	if (isRandom)
+	{
+	    for (int i = 0; i < numberOfNodes ; i++)
+	    {
+	    Point s;
+	    s.x = (rand() % 10) + 1 ;
+	    s.y = (rand() % 10) + 1;
+	    graph.push_back(s);
+	    }
+		totalNumberOfTicksAllowed = qBits*numberOfNodes;
+	}
+	else
+	{
+		// Best path measure:    19.6903 1000 qBits terminated successfully
+		// Best path measure:    18.5606 10000 qBits terminated successfully
+		// Best path measure:    18.5606 7000 qBits terminated successfully
+
+	    Point s;
+
+	  	s.x = 4;
+		s.y = 6;
+	    graph.push_back(s);
+	  	s.x = 8;
+		s.y = 6;
+	    graph.push_back(s);
+	  	s.x = 7;
+		s.y = 3;
+	    graph.push_back(s);
+	  	s.x = 10;
+		s.y = 2;
+	    graph.push_back(s);
+	  	s.x = 1;
+		s.y = 10;
+	    graph.push_back(s);
+	  	s.x = 1;
+		s.y = 7;
+	    graph.push_back(s);
+	  	s.x = 4;
+		s.y = 7;
+	    graph.push_back(s);
+	  	s.x = 4;
+		s.y = 7;
+	    graph.push_back(s);
+	  	s.x = 3;
+		s.y = 8;
+	    graph.push_back(s);
+	  	s.x = 3;
+		s.y = 7;
+	    graph.push_back(s);
+
+	    numberOfNodes = 10;
+		totalNumberOfTicksAllowed = qBits*numberOfNodes;
+	}
 }
 
 MachineInstance::~MachineInstance() {
@@ -45,27 +89,14 @@ long MachineInstance::Start() {
     cout << "\nStarting machine\n";
     cout << "Loading point data for Traveling Salesman Problem analysis\n";
 
-    cout << pointData.GetStatus() + "\n";
+    cout << graph.GetStatus() + "\n";
 
-    cout << "Number points = " + Utils::ToString(pointData.Length()) + "\n";
-    cout << "Number of possible paths = " + Utils::ToString(pointData.NumberOfPossiblePaths()) + "\n";
-    cout << "Best possible solution (shortest path) length = " + Utils::ToString(pointData.ShortestPathLength()) + "\n";
+    cout << "Number points = " + Utils::ToString(graph.Length()) + "\n";
+    cout << "Number of possible paths = " + Utils::ToString(graph.NumberOfPossiblePaths()) + "\n";
+    cout << "Best possible solution (shortest path) length = " + Utils::ToString(graph.ShortestPathLength()) + "\n";
 
-    bestPointData = GenerateRandomPath(); // alternative initializations are possible
+    bestGraph = GenerateRandomGraph(); // alternative initializations are possible
     indexesOfInactiveCycles = new int[numberInactive]; // indexes of cycles which are currently inactive
-
-    while (returnedstatus == 0)
-    	returnedstatus = Tick();
-
-	return returnedstatus;
-}
-
-long MachineInstance::Stop() {
-    cout << "Stop machine";
-	return 0L;
-}
-
-long MachineInstance::Tick() {
 
     for (int i = 0; i < qBits; ++i) // initialize each cycle, and best solution
     {
@@ -88,34 +119,51 @@ long MachineInstance::Tick() {
         currStatus = 1; // active
       }
 
-      PointArray randomPointPath = GenerateRandomPath();
-      double mq = randomPointPath.MeasureOfQuality();
+      Graph randomGraph = GenerateRandomGraph();
+      double mq = randomGraph.Measure();
       int numberOfVisits = 0;
 
       cycles[i].status = currStatus;
-      cycles[i].points = randomPointPath;
-      cycles[i].measureOfQuality = mq;
+      cycles[i].graph = randomGraph;
+      cycles[i].measure = mq;
       cycles[i].numberOfVisits = numberOfVisits;
 
       // does this cycle have best solution?
-      if (cycles[i].measureOfQuality < bestPointData.MeasureOfQuality()) // current cycle is better (< because smaller is better)
+	  // current cycle is better (< because smaller is better)
+      if (cycles[i].measure < bestGraph.Measure())
       {
-    	  bestPointData.Copy(cycles[i].points);
+    	  bestGraph.Copy(cycles[i].graph);
       }
+    }
 
-    cout << "\nInitial random quantum machine state\n";
-    cout << GetStatus();
+    int tickNumber = 0;
+    while (tickNumber < totalNumberOfTicksAllowed)
+    {
+    	returnedstatus = Tick(++tickNumber);
+    }
 
-      if (cycles[i].status == 1) // active cycle
+	return returnedstatus;
+}
+
+long MachineInstance::Stop() {
+    cout << "\nStoping machine\n";
+	return 0L;
+}
+
+long MachineInstance::Tick(int tickNumber) {
+
+    for (int i = 0; i < qBits; ++i)   // initialize each cycle, and best solution
+    {
+      if (cycles[i].status == 1)      // active cycle
         ProcessActiveCycle(i);
       else if (cycles[i].status == 2) // investigating cycle
     	  ProcessInvestigatingCycle(i);
       else if (cycles[i].status == 0) // inactive cycle
         ProcessInactiveCycle(i);
-
-    cout << "\nChanged quantum machine state\n";
-    cout << GetStatus();
     }
+
+    cout << "\nStatus At Tick number " + Utils::ToString(tickNumber) + ": \n";
+    cout << GetStatus();
 
 	return 0L;
 }
@@ -125,33 +173,34 @@ std::string MachineInstance::GetStatus()
 {
   std::string s = "";
   s += "\nBest path found: ";
-  for (unsigned int i = 0; i < bestPointData.size() - 1; ++i)
-    s += bestPointData[i].ToString() + "->";
-  s += bestPointData[bestPointData.size()-1].ToString() + "\n";
+  for (unsigned int i = 0; i < bestGraph.size() - 1; ++i)
+    s += bestGraph[i].ToString() + "->";
+  s += bestGraph[bestGraph.size()-1].ToString() + "\n";
 
-  s += "\nPath quality:    ";
-    s += Utils::ToString(bestPointData.MeasureOfQuality());
+  s += "Best path measure:    ";
+    s += Utils::ToString(bestGraph.Measure()) + "\n";
+
   s += "\n";
   return s;
 }
 
-PointArray MachineInstance::GenerateRandomPath()
+Graph MachineInstance::GenerateRandomGraph()
 {
-  PointArray result;
-  result.Copy(pointData);
+  Graph result;
+  result.Copy(graph);
   for (unsigned int i = 0; i < result.size(); i++) // Fisher-Yates (Knuth) shuffle
   {
 	unsigned int r = rand() % result.size(); // [0, Length-1] inclusive
     Point temp = result[r]; result[r] = result[i]; result[i] = temp;
   }
   return result;
-} // GenerateRandomPath()
+} // GenerateRandomGraph()
 
 
-PointArray MachineInstance::GenerateNeighborPath(PointArray points)
+Graph MachineInstance::GenerateNeighboringGraph(Graph graph)
 {
-  PointArray result;
-  result.Copy(points);
+  Graph result;
+  result.Copy(graph);
 
   unsigned int ranIndex = rand() % result.size(); // [0, Length-1] inclusive
   int adjIndex;
@@ -165,112 +214,73 @@ PointArray MachineInstance::GenerateNeighborPath(PointArray points)
   result[adjIndex] = tmp;
 
   return result;
-} // GenerateNeighborPath()
+} // GenerateNeighboringGraph()
 
 
 
 void MachineInstance::ProcessActiveCycle(int i)
 {
-  PointArray neighbor = GenerateNeighborPath(cycles[i].points); // find a neighbor solution
-  double neighborQuality = neighbor.MeasureOfQuality(); // get its quality
-  double prob =  ((double) rand() / (RAND_MAX)); // used to determine if cycle makes a mistake; compare against probMistake which has some small value (~0.01)
-  bool memoryWasUpdated = false; // used to determine if cycle should influence other cycles
-  bool numberOfVisitsOverLimit = false; // used to determine if cycle will convert to inactive status
+  Graph neighbor = GenerateNeighboringGraph(cycles[i].graph); // find a neighboring solution
+  double neighborMeasure = neighbor.Measure(); // get its quality
 
-  if (neighborQuality < cycles[i].measureOfQuality) // active cycle found better neighbor (< because smaller values are better)
+  if (neighborMeasure < cycles[i].measure) // active cycle found better neighbor (< because smaller values are better)
   {
-    if (prob < probMistake) // cycle makes mistake: rejects a better neighbor food source
-    {
       ++cycles[i].numberOfVisits; // no change to memory but update number of visits
-      // we don't allow more visits per node than number of qBits
-      if (cycles[i].numberOfVisits > qBits) numberOfVisitsOverLimit = true;
-    }
-    else // cycle does not make a mistake: accepts a better neighbor
-    {
-      cycles[i].points.Copy(neighbor);
-      cycles[i].measureOfQuality = neighborQuality; // update the quality
-      cycles[i].numberOfVisits = 0; // reset counter
-      memoryWasUpdated = true; // so that this cycle will influence other cycles
-    }
+      cycles[i].graph.Copy(neighbor);
+      cycles[i].measure = neighborMeasure; // update the quality
+      // first, determine if the new memory is a global best. note that if cycle has accepted a worse food source this can't be true
+      if (cycles[i].measure < bestGraph.Measure()) // the modified cycle's memory is a new global best (< because smaller is better)
+      {
+        bestGraph.Copy(cycles[i].graph);
+      }
+      InfluenceInactiveCycles(i); // cycle returns to machine availability and does communicates state to other cycles
   }
   else // active cycle did not find a better neighbor
   {
-    if (prob < probMistake) // cycle makes mistake: accepts a worse neighbor point path
-    {
-      cycles[i].points.Copy(neighbor);
-      cycles[i].measureOfQuality = neighborQuality; // update the quality
-      cycles[i].numberOfVisits = 0; // reset
-      memoryWasUpdated = true; // so that this cycle will influence other cycles
-    }
-    else // no mistake: cycle rejects worse point path
-    {
       ++cycles[i].numberOfVisits;
-      // we don't allow more visits per node than we have the number of qBits
-      if (cycles[i].numberOfVisits > qBits) numberOfVisitsOverLimit = true;
-    }
-  }
-
-  if (numberOfVisitsOverLimit == true)
-  {
-    cycles[i].status = 0; // current active cycle transitions to inactive
-    cycles[i].numberOfVisits = 0; // reset visits (and no change to this cycles memory)
-    int x = rand() % numberInactive; // pick a random inactive cycle. x is an index into a list, not a cycle ID
-    cycles[indexesOfInactiveCycles[x]].status = 1; // make it active
-    indexesOfInactiveCycles[x] = i; // record now-inactive cycle 'i' in the inactive list
-  }
-  else if (memoryWasUpdated == true) // current cycle returns and performs inter cycle communication
-  {
-    // first, determine if the new memory is a global best. note that if cycle has accepted a worse food source this can't be true
-    if (cycles[i].measureOfQuality < bestPointData.MeasureOfQuality()) // the modified cycle's memory is a new global best (< because smaller is better)
-    {
-      bestPointData.Copy(cycles[i].points);
-    }
-    InfluenceInactiveCycles(i); // cycle returns to machine availability and does communicates state to other cycles
-  }
-  else // number visits is not over limit and memory was not updated so do nothing (return to machine but do not influence)
-  {
-    return;
+      cycles[i].graph.Copy(neighbor);
+      cycles[i].measure = neighborMeasure; // update the quality
   }
 } // ProcessActiveCycle()
 
 void MachineInstance::ProcessInvestigatingCycle(int i)
 {
-  PointArray randomPointPath = GenerateRandomPath(); // investigating cycle finds a random point path
-  double randomPointPathQuality = randomPointPath.MeasureOfQuality(); // and examines its quality
-  if (randomPointPathQuality < cycles[i].measureOfQuality) // investigating cycle has found a better solution than its current one (< because smaller measure is better)
+  Graph randomGraph = GenerateRandomGraph(); // investigating cycle finds a random point path
+  double randomGraphMeasure = randomGraph.Measure(); // and examines its quality
+  // investigating cycle has found a better solution than its current one (< because smaller measure is better)
+  if (randomGraphMeasure < cycles[i].measure)
   {
-    cycles[i].points.Copy(randomPointPath);
-    cycles[i].measureOfQuality = randomPointPathQuality;
+    cycles[i].graph.Copy(randomGraph);
+    cycles[i].measure = randomGraphMeasure;
     // no change to cycles numberOfVisits or status
 
-    // did this cycle find a better overall/global solution?
-    if (cycles[i].measureOfQuality < bestPointData.MeasureOfQuality()) // yes, better overall solution (< because smaller is better)
+    // did this cycle find a graph?
+    if (cycles[i].measure < bestGraph.Measure()) // yes, better overall graph
     {
-      bestPointData.Copy(cycles[i].points);
-    } // better overall solution
+      bestGraph.Copy(cycles[i].graph);
+    } // better overall graph
 
-    InfluenceInactiveCycles(i); // investigating cycle returns to machine availability and attempts to influence other cycles
+    // investigating cycle returns to machine availability and attempts to influence other cycles
+    InfluenceInactiveCycles(i);
 
   } // if cycle found better solution
 } // ProcessInvestigatingCycle()
 
-void MachineInstance::ProcessInactiveCycle(int i) {}
+void MachineInstance::ProcessInactiveCycle(int i)
+{
+}
 
 void MachineInstance::InfluenceInactiveCycles(int i)
 {
-  for (int ii = 0; ii < numberInactive; ++ii) // each inactive cycle
+  for (int j = 0; j < numberInactive; ++j) // each inactive cycle
   {
-    int b = indexesOfInactiveCycles[ii]; // index of an inactive cycle
-    if (cycles[b].status != 0) break;
-    if (cycles[b].numberOfVisits != 0) break;
-    if (cycles[i].measureOfQuality < cycles[b].measureOfQuality) // investigating cycle has a better solution than current inactive cycle (< because smaller is better)
+    int b = indexesOfInactiveCycles[j]; // index of an inactive cycle
+    if (cycles[b].status != 0 || cycles[b].numberOfVisits != 0) continue;
+    // investigating cycle has better solution than inactive cycle
+    if (cycles[i].measure < cycles[b].measure)
     {
-      double p =  ((double) rand() / (RAND_MAX)); // will current inactive cycle be influenced by the cycle?
-      if (probInfluenced > p) // this inactive cycle is persuaded by the investigation
-      {
-        cycles[b].points.Copy(cycles[i].points);
-        cycles[b].measureOfQuality = cycles[i].measureOfQuality;
-      } // inactive cycle has been persuaded
+      cycles[b].graph.Copy(cycles[i].graph);
+      cycles[b].measure = cycles[i].measure;
     } // investigating cycle has better solution than inactive cycle
   } // each inactive cycle
 } // InfluenceInactiveCycles
